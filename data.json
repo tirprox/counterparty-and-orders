@@ -1,0 +1,30 @@
+[
+  {
+    "row": {
+      "clientName": "Олеся",
+      "clientLastName": "Павлова",
+      "infoSource": "По рекомендации",
+      "isCustomInfoSource": false,
+      "infoSourceCustom": "",
+      "phone": "+7 921 187-34-52",
+      "email": "Email.pavlova@yandex.ru",
+      "feedback": "Пальто волшебные:-)",
+      "date": "30.10.2017",
+      "time": "19:14:34"
+    }
+  },
+  {
+    "row": {
+      "clientName": "Юлия",
+      "clientLastName": "",
+      "infoSource": "Яндекс поиск",
+      "isCustomInfoSource": false,
+      "infoSourceCustom": "",
+      "phone": "+7 981 156-93-52",
+      "email": "juliajuls.b@yandex.ru",
+      "feedback": "",
+      "date": "30.10.2017",
+      "time": "19:18:21"
+    }
+  }
+]
