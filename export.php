@@ -67,7 +67,7 @@ $client = new Client($headers);
 $promises = [];
 
 
-$postUrl = $baseUrl . "counterparty";
+$postUrl = $baseUrl . "counterparty/";
 foreach ($dataToMS as $counterparty){
 	$requestUrl = $baseUrl . "counterparty?search=" . $counterparty['phone'];
 	
