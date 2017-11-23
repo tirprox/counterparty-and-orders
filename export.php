@@ -78,15 +78,18 @@ foreach ($dataToMS as $counterparty){
 	
 	$options = array_merge($headers, ['body' => $postJSON]);
 	
+	$client->request('POST', $postUrl, ['body' => $postJSON]);
+	
 	$promise->then(
 		function (ResponseInterface $res) use ($promises, $client, $postUrl, $headerJSON, $postJSON, $options){
 			$response = json_decode($res->getBody());
 			if(empty($response->rows)) {
 
-				var_dump($options);
+				//var_dump($options);
+				$client->request('POST', $postUrl, $options);
 				
-				$postPromise = $client->requestAsync('POST', $postUrl, $options);
-				$postPromise->then(
+				//$postPromise = $client->requestAsync('POST', $postUrl, $options);
+				/*$postPromise->then(
 					function (ResponseInterface $res){
 						$response = json_decode($res->getBody());
 					},
@@ -94,7 +97,7 @@ foreach ($dataToMS as $counterparty){
 						echo $e->getMessage() . "\n";
 						echo $e->getRequest()->getMethod();
 					});
-				$promises[] = $postPromise;
+				$promises[] = $postPromise;*/
 			}
 			//var_dump($response);
 		},
