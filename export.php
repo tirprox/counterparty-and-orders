@@ -9,10 +9,6 @@ $data = json_decode(file_get_contents("data.json"));
 $dataToMS = [];
 foreach ($data as $item) {
 	$name = $item->row->clientName;
-	/*if ($item->row->clientLastName !== "") {
-		$name .= " " . $item->row->clientLastName;
-	}*/
-	
 	$dataToMS[] = [
 		"name" => $name,
 		"phone" => $item->row->phone,
@@ -31,24 +27,11 @@ foreach ($data as $item) {
 	];
 }
 
-$login = "gleb@salonvbelom";
-$password = "k#TfUG6v";
+$sklad = MoySklad::getInstance(Auth::login, Auth::password);
 
-/*$login = "admin@pankrat87";
-$password = "527dc59b66";*/
-
-$sklad = MoySklad::getInstance($login, $password);
-
-//$counterparties = [];
-//$client = new Counterparty($sklad, $dataToMS);
-//$client->create();
 
 foreach ($dataToMS as $item) {
 	$client = new Counterparty($sklad, $item);
 	$counterparties[] = $client;
-	//$counterparties[] = new Counterparty($sklad, $item);
 	$client->create();
 }
-
-//$el = new EntityList($sklad, $counterparties);
-//$el->massCreate();
