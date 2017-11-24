@@ -85,8 +85,18 @@ foreach ($dataToMS as $counterparty){
 			$response = json_decode($res->getBody());
 			if(empty($response->rows)) {
 
-				//var_dump($options);
-				$client->request('POST', $postUrl, $options);
+				$client->request('POST', $postUrl,
+					[
+					'auth'           => [Auth::login, Auth::password],
+					'headers'  => ['Content-Type' => 'application/json'],
+					'stream_context' => [
+						'ssl' => [
+							'allow_self_signed' => true
+						],
+					],
+					'verify'         => false,
+					'body' => $postJSON
+				]);
 				
 				//$postPromise = $client->requestAsync('POST', $postUrl, $options);
 				/*$postPromise->then(
