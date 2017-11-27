@@ -46,7 +46,7 @@ foreach ($data as $item) {
 				"id" => "fe06e948-d034-11e7-7a34-5acf0006a4c3",
 				"name" => "Дата регистрации анкеты",
 				"type" => "time",
-				"value" => $item->row->date . " " . $item->row->time
+				"value" => prepare_time($item->row->date, $item->row->time)
 			]
 		],
 	];
@@ -69,7 +69,7 @@ $promises = [];
 
 $postUrl = $baseUrl . "counterparty/";
 foreach ($dataToMS as $counterparty){
-	$requestUrl = $baseUrl . "counterparty?search=" . $counterparty['phone'];
+	$requestUrl = $baseUrl . "counterparty?search=" . prepare_phone($counterparty['phone']);
 	
 	$postJSON = json_encode($counterparty, JSON_UNESCAPED_UNICODE);
 	$headerJSON = json_encode($headers, JSON_UNESCAPED_UNICODE);
@@ -78,28 +78,15 @@ foreach ($dataToMS as $counterparty){
 	
 	$options = array_merge($headers, ['body' => $postJSON]);
 	
-	$client->request('POST', $postUrl, ['body' => $postJSON]);
 	
 	$promise->then(
-		function (ResponseInterface $res) use ($promises, $client, $postUrl, $headerJSON, $postJSON, $options){
+		function (ResponseInterface $res) use ($promises, $client, $postUrl, $headerJSON, $postJSON, $options, $counterparty){
 			$response = json_decode($res->getBody());
-			if(empty($response->rows)) {
-
-				$client->request('POST', $postUrl,
-					[
-					'auth'           => [Auth::login, Auth::password],
-					'headers'  => ['Content-Type' => 'application/json'],
-					'stream_context' => [
-						'ssl' => [
-							'allow_self_signed' => true
-						],
-					],
-					'verify'         => false,
-					'body' => $postJSON
-				]);
-				
-				//$postPromise = $client->requestAsync('POST', $postUrl, $options);
-				/*$postPromise->then(
+         var_dump(count($response->rows));
+			if(count($response->rows)===0) {
+			   print("posting client\n");
+				$postPromise = $client->requestAsync('POST', $postUrl, $options);
+				$postPromise->then(
 					function (ResponseInterface $res){
 						$response = json_decode($res->getBody());
 					},
@@ -107,7 +94,7 @@ foreach ($dataToMS as $counterparty){
 						echo $e->getMessage() . "\n";
 						echo $e->getRequest()->getMethod();
 					});
-				$promises[] = $postPromise;*/
+				$promises[] = $postPromise;
 			}
 			//var_dump($response);
 		},
@@ -121,3 +108,18 @@ foreach ($dataToMS as $counterparty){
 }
 
 Promise\settle($promises)->wait();
+
+
+function prepare_phone($phone) {
+   $phone = str_replace("+", "", $phone);
+   $phone = str_replace("-", "", $phone);
+   $phone = str_replace(" ", "", $phone);
+   var_dump($phone);
+   return $phone;
+}
+
+function prepare_time($date, $time) {
+   $dateArray = date_parse($date);
+   $timeString = $dateArray['year']. "-" . $dateArray['month']. "-" . $dateArray['day'] . " " . $time;
+   return $timeString;
+}
