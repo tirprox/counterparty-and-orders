@@ -3,18 +3,11 @@
 require 'vendor/autoload.php';
 include "Auth.php";
 
-use GuzzleHttp\Pool;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-
-/*
-use MoySklad\MoySklad;
-use MoySklad\Entities\Counterparty;
-use MoySklad\Lists\EntityList;*/
 
 $data = json_decode(file_get_contents("data.json"));
 
@@ -47,6 +40,12 @@ foreach ($data as $item) {
 				"name" => "Дата регистрации анкеты",
 				"type" => "time",
 				"value" => prepare_time($item->row->date, $item->row->time)
+			],
+			[
+				"id" => "b3d9786a-d361-11e7-7a6c-d2a9001aff01",
+				"name" => "Отзыв",
+				"type" => "text",
+				"value" => $item->row->feedback
 			]
 		],
 	];
@@ -80,9 +79,9 @@ foreach ($dataToMS as $counterparty){
 	
 	
 	$promise->then(
-		function (ResponseInterface $res) use ($promises, $client, $postUrl, $headerJSON, $postJSON, $options, $counterparty){
+		function (ResponseInterface $res) use ($promises, $client, $postUrl, $options){
 			$response = json_decode($res->getBody());
-         var_dump(count($response->rows));
+         //var_dump(count($response->rows));
 			if(count($response->rows)===0) {
 			   print("posting client\n");
 				$postPromise = $client->requestAsync('POST', $postUrl, $options);
@@ -108,7 +107,6 @@ foreach ($dataToMS as $counterparty){
 }
 
 Promise\settle($promises)->wait();
-
 
 function prepare_phone($phone) {
    $phone = str_replace("+", "", $phone);
