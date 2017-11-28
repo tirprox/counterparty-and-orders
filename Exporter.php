@@ -22,10 +22,11 @@ class Exporter {
 		'verify'         => false,
 	];
 	
-	var $client, $promises = [];
+	var $client, $promises;
 	
 	function __construct() {
 		$this->client = new Client( self::HEADERS );
+      $this->promises = [];
 	}
 	
 	function encodeCounterparty($item) {
@@ -53,7 +54,7 @@ class Exporter {
 					"id" => "fe06e948-d034-11e7-7a34-5acf0006a4c3",
 					"name" => "Дата регистрации анкеты",
 					"type" => "time",
-					"value" => prepare_time($item->row->date, $item->row->time)
+					"value" => self::prepare_time($item->row->date, $item->row->time)
 				],
 				[
 					"id" => "b3d9786a-d361-11e7-7a6c-d2a9001aff01",
@@ -66,14 +67,12 @@ class Exporter {
 		return $encoded;
 	}
 	
-	function exportCounterparty( $counterpartyJSON ) {
-		
-		
-		$this->requestCounterparty($counterpartyJSON);
+	function exportCounterpartyFromAnketaJSON( $counterpartyJSON ) {
+		$this->requestCounterparty($this->encodeCounterparty($counterpartyJSON));
 	}
 	
 	function requestCounterparty($counterparty) {
-		$requestUrl = self::MS_BASE_URL . "counterparty?search=" . prepare_phone($counterparty['phone']);
+		$requestUrl = self::MS_BASE_URL . "counterparty?search=" . self::prepare_phone($counterparty['phone']);
 		$promise = $this->client->requestAsync('GET', $requestUrl,self::HEADERS);
 		$promise->then(
 			function (ResponseInterface $res) use ($counterparty) {
@@ -111,6 +110,34 @@ class Exporter {
 	function completeAllRequests() {
 		Promise\settle($this->promises)->wait();
 	}
+   
+   function checkModel( $model) {
+      if ( $model->row != null ) {
+         $validatedSum = 0;
+         $properties = [
+            "clientName",
+            "clientLastName",
+            "infoSource",
+            "isCustomInfoSource",
+            "infoSourceCustom",
+            "phone",
+            "email",
+            "feedback",
+            "date",
+            "time"
+         ];
+         
+         $fieldCount   = count($properties);
+         foreach ($properties as $property)
+            if (property_exists( $model->row, $property) ) {
+               $validatedSum++;
+            }
+         if ( $validatedSum == $fieldCount ) {
+            return true;
+         }
+      }
+      return false;
+   }
 	
 	static function prepare_phone($phone) {
 		$phone = str_replace("+", "", $phone);

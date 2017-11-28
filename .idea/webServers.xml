@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f4b1b6d2-9f7f-4e3e-8886-310367bdaf51" name="dreamwhite" url="http://dreamwhite.ru">
+        <fileTransfer host="dreamwhite.ru" port="21" rootFolder="/httpdocs/wp-content/plugins/counterparty-and-orders">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
