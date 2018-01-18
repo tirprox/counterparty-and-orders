@@ -28,6 +28,45 @@ class Exporter {
 		$this->client = new Client( self::HEADERS );
       $this->promises = [];
 	}
+
+    function encodeOldAnketaItem($item) {
+        $name = $item[0];
+        $encoded = [
+            "name" => $name,
+            "phone" => $item[3],
+            "email" => $item[4],
+            "tags" => ["anketa-paper"],
+            "companyType" => "individual",
+            "attributes" => [
+                [
+                    "id" =>  "c6597688-cf9b-11e7-7a6c-d2a9000ec13c",
+                    "name" => "Фамилия",
+                    "type" =>  "string",
+                    "value" => $item[1]
+                ],
+                [
+                    "id" => "fe06e4f2-d034-11e7-7a34-5acf0006a4c2",
+                    "name" => "Источник",
+                    "type" => "string",
+                    "value" => $item[2]
+                ],
+                [
+                    "id" => "fe06e948-d034-11e7-7a34-5acf0006a4c3",
+                    "name" => "Дата регистрации анкеты",
+                    "type" => "time",
+                    "value" => self::prepare_time($item[8], $item[7])
+                ],
+                [
+                    "id" => "f7acf60c-fc67-11e7-7a31-d0fd000e939f",
+                    "name" => "Facebook",
+                    "type" => "string",
+                    "value" => $item[9]
+                ],
+
+            ],
+        ];
+        return $encoded;
+    }
 	
 	function encodeCounterparty($item) {
 		$name = $item->row->clientName;
@@ -66,7 +105,33 @@ class Exporter {
 		];
 		return $encoded;
 	}
-	
+
+	function exportOldAnketaItem($item) {
+
+
+        $requestUrl = self::MS_BASE_URL . "counterparty?search=" . self::prepare_phone($item[3]);
+        print("url: $requestUrl \n");
+        print("name: $item[0] \n");
+        print("surname: $item[1] \n");
+        print("source: $item[2] \n");
+        print("phone: $item[3] \n");
+        print("email: $item[4] \n");
+        print("date: " . self::prepare_time($item[8], $item[7]) . "\n");
+
+        $encoded = $this->encodeOldAnketaItem($item);
+        //$response = $this->client->request('GET', $requestUrl,self::HEADERS);
+
+        $response = $this->client->get($requestUrl);
+        $response = json_decode($response->getBody());
+        if(count($response->rows)===0) {
+            $postJSON = json_encode($encoded, JSON_UNESCAPED_UNICODE);
+            $options = array_merge(self::HEADERS, ['body' => $postJSON]);
+
+            $this->client->request('POST', self::MS_POST_URL, $options);
+        }
+
+    }
+
 	function exportCounterpartyFromAnketaJSON( $counterpartyJSON ) {
 		$this->requestCounterparty($this->encodeCounterparty($counterpartyJSON));
 	}
@@ -147,7 +212,8 @@ class Exporter {
 	}
 	
 	static function prepare_time($date, $time) {
-		$dateArray = date_parse($date);
+        $dateArray = date_parse_from_format("j.n.Y", $date);
+		//$dateArray = date_parse($date);
 		$timeString = $dateArray['year']. "-" . $dateArray['month']. "-" . $dateArray['day'] . " " . $time;
 		return $timeString;
 	}
