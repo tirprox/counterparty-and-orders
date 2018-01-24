@@ -1,7 +1,7 @@
 <?php
 
 require 'vendor/autoload.php';
-include "Auth.php";
+include "MSAuth.php";
 
 use GuzzleHttp\Promise;
 use GuzzleHttp\Client;
@@ -51,7 +51,7 @@ foreach ($data as $item) {
 	];
 }
 $headers = [
-	'auth'           => [Auth::login, Auth::password],
+	'MSAuth' => [MSAuth::login, MSAuth::password],
 	'headers'  => ['Content-Type' => 'application/json'],
 	'stream_context' => [
 		'ssl' => [

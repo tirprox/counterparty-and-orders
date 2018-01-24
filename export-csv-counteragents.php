@@ -1,8 +1,8 @@
 <?php
 
-include "Exporter.php";
+include "MSExporter.php";
 
-$exporter = new Exporter();
+$exporter = new MSExporter();
 
 $csvFile = file('anketa.csv');
 $data = [];

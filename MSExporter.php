@@ -1,6 +1,6 @@
 <?php
 require 'vendor/autoload.php';
-include "Auth.php";
+include_once "MSAuth.php";
 
 use GuzzleHttp\Promise;
 use GuzzleHttp\Client;
@@ -8,11 +8,11 @@ use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 
-class Exporter {
+class MSExporter {
 	const MS_BASE_URL = "https://online.moysklad.ru/api/remap/1.1/entity/";
 	const MS_POST_URL = "https://online.moysklad.ru/api/remap/1.1/entity/counterparty/";
 	const HEADERS = [
-		'auth'           => [ Auth::login, Auth::password ],
+		'auth' => [ MSAuth::login, MSAuth::password ],
 		'headers'        => [ 'Content-Type' => 'application/json' ],
 		'stream_context' => [
 			'ssl' => [

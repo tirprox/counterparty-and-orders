@@ -1,7 +1,7 @@
 <?php
-include "Exporter.php";
+include "MSExporter.php";
 
-$exporter = new Exporter();
+$exporter = new MSExporter();
 
 /*$newFile = file_get_contents( 'php://input' );
 $newData = json_decode( $newFile );
