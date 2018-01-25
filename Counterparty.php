@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dreamwhite
- * Date: 22.01.2018
- * Time: 18:23
- */
 
 class Counterparty
 {
@@ -86,13 +80,8 @@ class Counterparty
     }
 
     function parseJson(stdClass $json) : void {
-        //$data = json_decode($json);
-
         $this->id = $json->rows[0]->id;
-       // var_dump($this->id);
-
         $this->href = MSExporter::MS_BASE_URL . "counterparty/" . $this->id;
-
     }
 
 

@@ -27,7 +27,6 @@ class MSOrderExporter
     function exportOrder(WC_Order $wcOrder) {
         $order = new Order();
 
-
         $order_data = $wcOrder->get_data();
         $order->name = $order_data['id'];
         $phone =  $order_data['billing']['phone'];
@@ -41,13 +40,11 @@ class MSOrderExporter
         $order->counterparty = $counterparty;
 
         $order = $this->addProductsToOrder($wcOrder, $order);
-        var_dump($order->products);
         $order = $this->postOrder($order);
 
         foreach ($order->products as $product) {
 
             $data = $this->getProductBySku($product['sku']);
-            //var_dump($product['sku']);
             $this->postProductToOrder($data, $order, $product);
 
         }
@@ -65,7 +62,6 @@ class MSOrderExporter
         else {
             $response = $request;
         }
-
 
         return $response;
     }
@@ -126,7 +122,6 @@ class MSOrderExporter
     function postCounterparty(Counterparty $counterparty) {
 
         $postJSON = $counterparty->encodeForMS();
-        //$postJSON = json_encode($counterparty, JSON_UNESCAPED_UNICODE);
         $options = array_merge(MSExporter::HEADERS, ['body' => $postJSON]);
 
         $response = $this->client->post(self::MS_POST_COUNTERPARTY_URL, $options);
