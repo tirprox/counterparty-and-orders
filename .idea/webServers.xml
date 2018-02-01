@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="f4b1b6d2-9f7f-4e3e-8886-310367bdaf51" name="dreamwhite" url="http://dreamwhite.ru">
-        <fileTransfer host="dreamwhite.ru" port="22" rootFolder="/var/www/vhosts/dreamwhite.ru/new.dreamwhite.ru/wp-content/plugins/counterparty-and-orders" accessType="SFTP">
+        <fileTransfer host="dreamwhite.ru" port="22" rootFolder="/var/www/vhosts/dreamwhite.ru/dreamwhite.ru/wp-content/plugins/counterparty-and-orders" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
