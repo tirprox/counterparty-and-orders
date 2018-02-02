@@ -20,7 +20,7 @@ foreach ($data as $item) {
 }*/
 
 $size = count($data);
-for ($i=916; $i<$size; $i++) {
+for ($i=0; $i<$size; $i++) {
     print("iteration: $i\n");
     $exporter->exportOldAnketaItem($data[$i]);
 }

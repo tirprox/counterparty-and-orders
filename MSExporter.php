@@ -37,6 +37,16 @@ class MSExporter {
             "email" => $item[4],
             "tags" => ["anketa-paper"],
             "companyType" => "individual",
+            "group" => [
+                "meta" => [
+                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/group/59c74466-a4ef-11e7-7a69-8f5500021289",
+                    "metadataHref" => "https://online.moysklad.ru/api/remap/1.1/entity/group/metadata",
+                    "type" => "group",
+                    "mediaType" => "application/json"
+                ]
+            ],
+
+
             "attributes" => [
                 [
                     "id" =>  "c6597688-cf9b-11e7-7a6c-d2a9000ec13c",

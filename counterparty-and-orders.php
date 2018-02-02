@@ -13,7 +13,7 @@ Domain Path: /languages
 */
 include( plugin_dir_path( __FILE__ ) . 'MSOrderExporter.php');
 
-add_action('woocommerce_thankyou', 'post_order', 10, 1);
+add_action('woocommerce_payment_complete', 'post_order', 10, 1);
 function post_order( $order_id ) {
 
     if ( ! $order_id )
