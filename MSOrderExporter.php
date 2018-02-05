@@ -93,7 +93,7 @@ class MSOrderExporter
             "assortment" => [
                 "meta" => [
                     "href" => "https://online.moysklad.ru/api/remap/1.1/entity/product/$MSproduct->id",
-                    "type" => "product",
+                    "type" => "variant",
                     "mediaType" => "application/json"
                 ]
             ]
