@@ -110,7 +110,7 @@ class MSOrderExporter
         $order_items = $wcOrder->get_items();
         foreach( $order_items as $item ) {
 
-            $product = wc_get_product( $item['product_id'] );
+            $product = wc_get_product( $item['variation_id'] );
             //var_dump($product->get_sku());
             $order->addProduct($item['name'], $product->get_sku(), $item['qty']);
 
