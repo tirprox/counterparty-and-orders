@@ -111,8 +111,10 @@ class MSOrderExporter
         foreach( $order_items as $item ) {
 
             $product = wc_get_product( $item['variation_id'] );
-            //var_dump($product->get_sku());
-            $order->addProduct($item['name'], $product->get_sku(), $item['qty']);
+
+            $sku = get_post_meta( $item['variation_id'], '_sku', true );
+            var_dump($sku);
+            $order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
 
         }
 
