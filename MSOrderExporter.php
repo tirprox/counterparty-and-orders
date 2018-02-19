@@ -113,7 +113,7 @@ class MSOrderExporter
             $product = wc_get_product( $item['variation_id'] );
 
             $sku = get_post_meta( $item['variation_id'], '_sku', true );
-            var_dump($sku);
+//            var_dump($sku);
             $order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
 
         }
