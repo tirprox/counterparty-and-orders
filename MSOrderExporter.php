@@ -8,6 +8,7 @@
 require_once "Order.php";
 require_once "MSExporter.php";
 require_once "Counterparty.php";
+require_once "MSLogger.php";
 
 class MSOrderExporter
 {
@@ -44,7 +45,8 @@ class MSOrderExporter
 
         foreach ($order->products as $product) {
 
-            $data = $this->getProductBySku($product['sku']);
+//            $data = $this->getProductBySku($product['sku']);
+            $data = $this->getProductVariantByName($product['name']);
             $this->postProductToOrder($data, $order, $product);
 
         }
@@ -78,7 +80,20 @@ class MSOrderExporter
     }
 
     function getProductBySku(string $sku) : stdClass {
+        // filter variant by sku is not working!!!
         $requestUrl = self::MS_BASE_URL . "product?filter=code=" . $sku;
+
+        $response = $this->client->get($requestUrl);
+        $response = json_decode($response->getBody());
+        return $response->rows[0];
+
+    }
+
+    function getProductVariantByName(string $name) : stdClass {
+        // filter variant by sku is not working!!!
+        $requestUrl = self::MS_BASE_URL . "variant?filter=name=" . $name;
+        print($requestUrl);
+
         $response = $this->client->get($requestUrl);
         $response = json_decode($response->getBody());
         return $response->rows[0];
@@ -111,9 +126,12 @@ class MSOrderExporter
         foreach( $order_items as $item ) {
 
             $product = wc_get_product( $item['variation_id'] );
+            $name = $product->get_name();
 
             $sku = get_post_meta( $item['variation_id'], '_sku', true );
-//            var_dump($sku);
+            MSLogger::log("sku from wc: " . $sku);
+            MSLogger::log("name: " . $name);
+//            $sku = "0005824";
             $order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
 
         }
@@ -143,4 +161,6 @@ class MSOrderExporter
         }
 
     }
+
+
 }

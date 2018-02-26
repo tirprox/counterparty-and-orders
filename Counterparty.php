@@ -74,6 +74,14 @@ class Counterparty
             "email" => $this->email,
             "tags" => $this->tags,
             "companyType" => "individual",
+            "group" => [
+                "meta" => [
+                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/group/59c74466-a4ef-11e7-7a69-8f5500021289",
+                    "metadataHref" => "https://online.moysklad.ru/api/remap/1.1/entity/group/metadata",
+                    "type" => "group",
+                    "mediaType" => "application/json"
+                ]
+            ],
             "attributes" => $this->attributes
         ];
         return json_encode($encoded, JSON_UNESCAPED_UNICODE);
