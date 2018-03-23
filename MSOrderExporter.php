@@ -10,6 +10,10 @@ require_once "MSExporter.php";
 require_once "Counterparty.php";
 require_once "MSLogger.php";
 
+ini_set("log_errors", 1);
+ini_set("error_log", "errors.log");
+//error_log( "Hello, errors!" );
+
 class MSOrderExporter
 {
 
@@ -46,7 +50,10 @@ class MSOrderExporter
         foreach ($order->products as $product) {
 
 //            $data = $this->getProductBySku($product['sku']);
-            $data = $this->getProductVariantByName($product['name']);
+
+            $variantName = $product['name']. ' (' . $product['color'] . ', ' . $product['size'] . ')';
+            MSLogger::log("varname: " . $variantName);
+            $data = $this->getProductVariantByName($variantName);
             $this->postProductToOrder($data, $order, $product);
 
         }
@@ -73,6 +80,7 @@ class MSOrderExporter
         $options = array_merge(MSExporter::HEADERS, ['body' => $order->encodeForMS()]);
 
         $response = $this->client->post(self::MS_POST_ORDER_URL, $options);
+        error_log( print_r( $response , true ) );
         $orderData = json_decode($response->getBody());
         $order->id = $orderData->id;
         return $order;
@@ -105,6 +113,7 @@ class MSOrderExporter
 
         $data = [
             'quantity' => (int) $orderProduct['quantity'],
+            'price' => $this->getPrice($orderProduct['price']),
             "assortment" => [
                 "meta" => [
                     "href" => "https://online.moysklad.ru/api/remap/1.1/entity/product/$MSproduct->id",
@@ -121,18 +130,33 @@ class MSOrderExporter
         return json_decode($response->getBody());
     }
 
+    function getPrice($productPrice){
+        $price = (int) $productPrice;
+        $price = $price * 100;
+        return $price;
+    }
+
     function addProductsToOrder(WC_Order $wcOrder, Order $order) : Order {
         $order_items = $wcOrder->get_items();
         foreach( $order_items as $item ) {
 
-            $product = wc_get_product( $item['variation_id'] );
+            $product = wc_get_product( $item['product_id'] );
+            $variant = wc_get_product( $item['variation_id'] );
+
+            //$product = wc_get_product( $item['variation_id'] );
             $name = $product->get_name();
+            $color = $variant->get_attribute('pa_tsvet');
+            $size = $variant->get_attribute('pa_razmer');
+            $price = $item->get_total();
+            //$price = "10000";
 
             $sku = get_post_meta( $item['variation_id'], '_sku', true );
             MSLogger::log("sku from wc: " . $sku);
             MSLogger::log("name: " . $name);
 //            $sku = "0005824";
-            $order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
+
+            $order->addProduct($name, $sku, $item['qty'], $color, $size, $price);
+            //$order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
 
         }
 
@@ -157,7 +181,7 @@ class MSOrderExporter
             return null;
         }
         else {
-            return $response;
+            return $response->rows[0];
         }
 
     }

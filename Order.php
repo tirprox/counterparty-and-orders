@@ -20,43 +20,21 @@ class Order
 
     }
 
-    function addProduct(string $name, string $sku, int $quantity): void
+    function addProduct(string $name, string $sku, int $quantity, string $color, string $size, string $price = '0'): void
     {
         $this->products[] = [
             'name' => $name,
+            'color' => $color,
+            'size' => $size,
             'sku' => $sku,
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'price' => $price
         ];
 
     }
 
     function encodeForMS(): string
     {
-        /* $data = [
-             'name' => (string)$this->name,
-             "organization" => [
-                 "meta" => [
-                     "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/8f3fb0c0-e00e-11e6-7a69-9711001f668a",
-                     "type" => "organization",
-                     "mediaType" => "application/json"
-                 ]
-             ],
-             'agent' => [
-                 'meta' => [
-                     'href' => "https://online.moysklad.ru/api/remap/1.1/entity/counterparty/" . $this->counterparty->id,
-                     "type" => "counterparty",
-                     "mediaType" => "application/json"
-                 ]
-             ],
-             'store' => [
-                 'meta' => [
-                     "href" => "https://online.moysklad.ru/api/remap/1.1/entity/store/baedb9ed-de2a-11e6-7a34-5acf00087a3f",
-                     "type" => "store",
-                     "mediaType" => "application/json"
-                 ]
-             ]
-         ];*/
-
         $this->data['name'] = (string)$this->name;
         $this->data['organization'] = [
             "meta" => [

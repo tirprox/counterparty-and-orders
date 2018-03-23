@@ -4,7 +4,7 @@ class Counterparty
 {
     public $id, $href;
     public $name, $phone, $email;
-    public $tags = ['test'];
+    public $tags = ['site-order'];
 
     var $attributes = [];
 
@@ -88,7 +88,8 @@ class Counterparty
     }
 
     function parseJson(stdClass $json) : void {
-        $this->id = $json->rows[0]->id;
+
+        $this->id = $json->id;
         $this->href = MSExporter::MS_BASE_URL . "counterparty/" . $this->id;
     }
 
