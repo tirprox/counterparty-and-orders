@@ -31,6 +31,42 @@ class Counterparty
     }
 
 
+
+    function addCountry(string $attr) {
+        $this->attributes[] = [
+            "id" =>  "f2e3ea7d-1e11-11e8-9107-50480007765e",
+            "name" => "Страна",
+            "type" =>  "string",
+            "value" => $attr
+        ];
+    }
+    function addCity(string $attr) {
+
+        $this->attributes[] = [
+            "id" =>  "f2e3f108-1e11-11e8-9107-50480007765f",
+            "name" => "Город",
+            "type" =>  "string",
+            "value" => $attr
+        ];
+    }
+    function addAddress(string $attr) {
+
+        $this->attributes[] = [
+            "id" =>  "f2e3f460-1e11-11e8-9107-504800077660",
+            "name" => "Адрес",
+            "type" =>  "string",
+            "value" => $attr
+        ];
+    }
+    function addPostcode(string $attr) {
+        $this->attributes[] = [
+            "id" =>  "f2e3f7d2-1e11-11e8-9107-504800077661",
+            "name" => "Почтовый индекс",
+            "type" =>  "string",
+            "value" => $attr
+        ];
+    }
+
     function addLastName(string $lastName): void {
         $this->attributes[] = [
             "id" =>  "c6597688-cf9b-11e7-7a6c-d2a9000ec13c",

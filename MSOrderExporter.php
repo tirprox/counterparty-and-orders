@@ -34,12 +34,36 @@ class MSOrderExporter
 
         $order_data = $wcOrder->get_data();
         $order->name = $order_data['id'];
+
+        $order->wc_order_data = $order_data;
+
         $phone =  $order_data['billing']['phone'];
         $email = $order_data['billing']['email'];
         $name = $order_data['billing']['first_name'];
 
+
+        $lastname = $order_data['billing']['last_name'];
+
+        $country = WC()->countries->countries[$order_data['billing']['country']];
+        //$country = $order_data['billing']['country'];
+        $city = $order_data['billing']['city'];
+        $address = $order_data['billing']['address_1'];
+        $postcode = $order_data['billing']['postcode'];
+
+
+
+
         $counterparty = new Counterparty($name, $phone, $email);
+        $counterparty->addLastName($lastname);
+
+
+        $counterparty->addCountry($country);
+        $counterparty->addCity($city);
+        $counterparty->addAddress($address);
+        $counterparty->addPostcode($postcode);
+
         $counterparty->parseJson($this->requestCounterparty($counterparty));
+
 
         //$order->counterparty = $this->requestCounterparty($counterparty);
         $order->counterparty = $counterparty;
@@ -51,13 +75,14 @@ class MSOrderExporter
 
 //            $data = $this->getProductBySku($product['sku']);
 
-            $variantName = $product['name']. ' (' . $product['color'] . ', ' . $product['size'] . ')';
-            MSLogger::log("varname: " . $variantName);
-            $data = $this->getProductVariantByName($variantName);
-            $this->postProductToOrder($data, $order, $product);
+            //$variantName = $product['name']. ' (' . $product['color'] . ', ' . $product['size'] . ')';
+            //MSLogger::log("varname: " . $variantName);
+            //$data = $this->getProductVariantByName($variantName);
+            $this->postProductToOrder($order, $product);
 
         }
 
+        $this->postDeliveryToOrder($order);
 
     }
 
@@ -80,7 +105,7 @@ class MSOrderExporter
         $options = array_merge(MSExporter::HEADERS, ['body' => $order->encodeForMS()]);
 
         $response = $this->client->post(self::MS_POST_ORDER_URL, $options);
-        error_log( print_r( $response , true ) );
+        //error_log( print_r( $response , true ) );
         $orderData = json_decode($response->getBody());
         $order->id = $orderData->id;
         return $order;
@@ -108,16 +133,16 @@ class MSOrderExporter
 
     }
 
-    function postProductToOrder(stdClass $MSproduct, Order $order, array $orderProduct) {
+    function postDeliveryToOrder(Order $order) {
         $requestUrl = self::MS_BASE_URL . "customerorder/$order->id/positions";
-
+        echo $requestUrl;
         $data = [
-            'quantity' => (int) $orderProduct['quantity'],
-            'price' => $this->getPrice($orderProduct['price']),
+            'quantity' => 1,
+            'price' => 50000,
             "assortment" => [
                 "meta" => [
-                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/product/$MSproduct->id",
-                    "type" => "variant",
+                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/service/c7788cc1-30dc-11e8-9109-f8fc00115919", // Доставка 500
+                    "type" => "service",
                     "mediaType" => "application/json"
                 ]
             ]
@@ -127,6 +152,31 @@ class MSOrderExporter
         $options = array_merge(MSExporter::HEADERS, ['body' => $postJSON]);
 
         $response = $this->client->post( $requestUrl, $options);
+        //var_dump(json_decode($response->getBody()));
+        return json_decode($response->getBody());
+    }
+
+    function postProductToOrder(Order $order, array $orderProduct) {
+        $requestUrl = self::MS_BASE_URL . "customerorder/$order->id/positions";
+
+        $data = [
+            'quantity' => (int) $orderProduct['quantity'],
+            'price' => $this->getPrice($orderProduct['price']),
+            "assortment" => [
+                "meta" => [
+                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/product/" . $orderProduct['id'],
+                    "type" => "variant",
+                    "mediaType" => "application/json"
+                ]
+            ],
+
+        ];
+
+        $postJSON = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $options = array_merge(MSExporter::HEADERS, ['body' => $postJSON]);
+
+        $response = $this->client->post( $requestUrl, $options);
+        //var_dump(json_decode($response->getBody()));
         return json_decode($response->getBody());
     }
 
@@ -151,11 +201,13 @@ class MSOrderExporter
             //$price = "10000";
 
             $sku = get_post_meta( $item['variation_id'], '_sku', true );
+            $ms_id = get_post_meta( $item['variation_id'], '_ms_id', true );
             MSLogger::log("sku from wc: " . $sku);
             MSLogger::log("name: " . $name);
+            //echo $ms_id;
 //            $sku = "0005824";
 
-            $order->addProduct($name, $sku, $item['qty'], $color, $size, $price);
+            $order->addProduct($name, $sku, $item['qty'], $color, $size, $price, $ms_id);
             //$order->addProduct($item['name'], /*$product->get_sku()*/ $sku, $item['qty']);
 
         }

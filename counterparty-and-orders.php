@@ -30,4 +30,5 @@ function post_order( $order_id ) {
     if ($user!==false) {
         $user->set_role( 'customerregistered' );
     }
+
 }
