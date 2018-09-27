@@ -14,13 +14,14 @@ class Order
         "Флигель" => "baedb9ed-de2a-11e6-7a34-5acf00087a3f",
         "В белом" => "4488e436-07e7-11e6-7a69-971100273f23",
         "Флигель Спб" => "83351169-8038-11e8-9ff4-34e800057d4a",
+        'Флигель new' => 'ca07a57b-9c9c-11e8-9ff4-34e800073881',
+        'Арма Мск' => 'c8d5b255-932f-11e8-9109-f8fc0012c318',
     ];
 
     function __construct()
     {
-        $this->setStore('Флигель Спб');
-
-
+        //$this->setStore('Флигель new');
+        $this->setStore('Арма Мск');
     }
 
     function addProduct(string $name, string $sku, int $quantity, string $color, string $size, string $price = '0', $id): void
