@@ -36,6 +36,7 @@ class MSOrderExporter
         $order->name = $order_data['id'];
 
         $order->wc_order_data = $order_data;
+        $shippingPrice = $wcOrder->get_total_shipping();
 
         $phone =  $order_data['billing']['phone'];
         $email = $order_data['billing']['email'];
@@ -82,7 +83,9 @@ class MSOrderExporter
 
         }
 
-        $this->postDeliveryToOrder($order);
+
+
+        $this->postDeliveryToOrder($order,  $shippingPrice);
 
     }
 
@@ -133,15 +136,16 @@ class MSOrderExporter
 
     }
 
-    function postDeliveryToOrder(Order $order) {
+    function postDeliveryToOrder(Order $order, $price) {
         $requestUrl = self::MS_BASE_URL . "customerorder/$order->id/positions";
         echo $requestUrl;
         $data = [
             'quantity' => 1,
-            'price' => 50000,
+            'price' => $price * 100,
             "assortment" => [
                 "meta" => [
-                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/service/c7788cc1-30dc-11e8-9109-f8fc00115919", // Доставка 500
+                    "href" => "https://online.moysklad.ru/api/remap/1.1/entity/service/08b5fb81-b0f3-11e8-9ff4-34e80004e692", // Доставка 1000
+                    //"href" => "https://online.moysklad.ru/api/remap/1.1/entity/service/c7788cc1-30dc-11e8-9109-f8fc00115919", // Доставка 500
                     "type" => "service",
                     "mediaType" => "application/json"
                 ]
