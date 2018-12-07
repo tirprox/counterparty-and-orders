@@ -9,6 +9,15 @@ class Order
     var $data = [];
     var $wc_order_data = [];
 
+    var $organiztions = [
+            'DW Retail Spb' => '8f3fb0c0-e00e-11e6-7a69-9711001f668a',
+            'DW Retail Msk' => '40356311-f9f6-11e8-9107-504800024389'
+        ];
+
+    var $groups = [
+        'DW Retail Spb' => 'https://online.moysklad.ru/api/remap/1.1/entity/group/2e609760-f30d-11e8-9109-f8fc00096f88',
+        'DW Retail Msk' => 'https://online.moysklad.ru/api/remap/1.1/entity/group/2e606ff4-f30d-11e8-9109-f8fc00096f87'
+    ];
 
     var $stores = [
         "Флигель" => "baedb9ed-de2a-11e6-7a34-5acf00087a3f",
@@ -17,6 +26,19 @@ class Order
         'Флигель new' => 'ca07a57b-9c9c-11e8-9ff4-34e800073881',
         'Арма Мск' => 'c8d5b255-932f-11e8-9109-f8fc0012c318',
     ];
+
+    var $cityConfig = [
+        'spb' => [
+            'organization' => 'DW Retail Spb',
+            'store' => 'Флигель Спб',
+            'group' => 'DW Retail Spb'
+        ],
+        'msk' => [
+            'organization' => 'DW Retail Msk',
+            'store' => 'Арма Мск',
+            'group' => 'DW Retail Msk'
+        ]
+        ];
 
     function __construct()
     {
@@ -36,6 +58,38 @@ class Order
             'price' => $price
         ];
 
+    }
+
+    function addCityParams($encodedOrder, $city) {
+
+
+
+        $encodedOrder['organization'] = [
+            "meta" => [
+                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/8f3fb0c0-e00e-11e6-7a69-9711001f668a",
+                "type" => "organization",
+                "mediaType" => "application/json"
+            ]
+        ];
+
+        $encodedOrder['group'] = [
+            "meta" => [
+                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/group/59c74466-a4ef-11e7-7a69-8f5500021289",
+                "metadataHref" => "https://online.moysklad.ru/api/remap/1.1/entity/group/metadata",
+                "type" => "group",
+                "mediaType" => "application/json"
+            ]
+        ];
+
+        $encodedOrder['store'] = [
+            'meta' => [
+                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/store/" . $this->stores[$store],
+                "type" => "store",
+                "mediaType" => "application/json"
+            ]
+        ];
+
+        return $encodedOrder;
     }
 
     function encodeForMS(): string
