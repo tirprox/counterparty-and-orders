@@ -66,7 +66,7 @@ class Order
 
         $encodedOrder['organization'] = [
             "meta" => [
-                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/8f3fb0c0-e00e-11e6-7a69-9711001f668a",
+                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/40356311-f9f6-11e8-9107-504800024389",
                 "type" => "organization",
                 "mediaType" => "application/json"
             ]
@@ -96,8 +96,12 @@ class Order
     {
         $this->data['name'] = (string)$this->name;
         $this->data['organization'] = [
-            "meta" => [
+            /*"meta" => [
                 "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/8f3fb0c0-e00e-11e6-7a69-9711001f668a",
+                "type" => "organization",
+                "mediaType" => "application/json"*/
+            "meta" => [
+                "href" => "https://online.moysklad.ru/api/remap/1.1/entity/organization/40356311-f9f6-11e8-9107-504800024389",
                 "type" => "organization",
                 "mediaType" => "application/json"
             ]

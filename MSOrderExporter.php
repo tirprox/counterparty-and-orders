@@ -28,6 +28,47 @@ class MSOrderExporter
         $this->client = $this->exporter->client;
     }
 
+    function exportCounterparty(WC_Order $wcOrder) {
+        $order = new Order();
+
+        $order_data = $wcOrder->get_data();
+        $order->name = $order_data['id'];
+
+        $order->wc_order_data = $order_data;
+        $shippingPrice = $wcOrder->get_total_shipping();
+
+        $phone =  $order_data['billing']['phone'];
+        $email = $order_data['billing']['email'];
+        $name = $order_data['billing']['first_name'];
+
+
+        $lastname = $order_data['billing']['last_name'];
+
+        $country = WC()->countries->countries[$order_data['billing']['country']];
+        //$country = $order_data['billing']['country'];
+        $city = $order_data['billing']['city'];
+        $address = $order_data['billing']['address_1'];
+        $postcode = $order_data['billing']['postcode'];
+
+
+
+
+        $counterparty = new Counterparty($name, $phone, $email);
+        $counterparty->addLastName($lastname);
+
+
+        $counterparty->addCountry($country);
+        $counterparty->addCity($city);
+        $counterparty->addAddress($address);
+        $counterparty->addPostcode($postcode);
+
+
+        $counterparty->parseJson($this->requestCounterparty($counterparty));
+
+
+
+    }
+
 
     function exportOrder(WC_Order $wcOrder) {
         $order = new Order();
